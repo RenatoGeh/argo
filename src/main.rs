@@ -4,8 +4,8 @@ use argo::article::{self, Article};
 use argo::author;
 
 fn main() {
-    let a = author::new(String::from("Author Person"));
-    let w = article::new(0, String::from("Article Title"), vec![a]);
+    let a = author::new("Author Person");
+    let w = article::new(0, "Article Title", vec![a]);
 
     println!("{:#?}", w);
 
