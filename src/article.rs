@@ -7,13 +7,26 @@ pub struct Article {
     id: i32,
     title: String,
     authors: Vec<Author>,
+    keywords: Vec<String>,
+    year: u16,
+    journal: String,
 }
 
-pub fn new(id: i32, title: &str, authors: Vec<Author>) -> Article {
+pub fn new(
+    id: i32,
+    title: &str,
+    authors: Vec<Author>,
+    kw: Vec<&str>,
+    year: u16,
+    journal: &str,
+) -> Article {
     Article {
         id: id,
         title: String::from(title),
         authors: authors,
+        keywords: kw.iter().map(|x| String::from(*x)).collect(),
+        year: year,
+        journal: String::from(journal),
     }
 }
 
@@ -27,12 +40,21 @@ mod test {
             article::new(
                 0,
                 "What a Long Title for a Short Paper",
-                vec![author::new("First Author"), author::new("Second Author")],
+                vec![
+                    author::new(0, "First Author"),
+                    author::new(1, "Second Author"),
+                ],
+                vec!["what", "meta", "keywords", "innit"],
+                2048,
+                "Journal of Pure and Applied Titling",
             ),
             article::new(
                 1,
                 "What a Short Paper for a Long Title",
-                vec![author::new("Author One"), author::new("Author Two")],
+                vec![author::new(2, "Author One"), author::new(3, "Author Two")],
+                vec!["quite long keywords", "not so short keywords"],
+                1024,
+                "Proceedings of the Long Conference on Short Papers",
             ),
         ]
     }
@@ -45,12 +67,21 @@ mod test {
             (
                 0,
                 "What a Long Title for a Short Paper",
-                vec![author::new("First Author"), author::new("Second Author")],
+                vec![
+                    author::new(0, "First Author"),
+                    author::new(1, "Second Author"),
+                ],
+                vec!["what", "meta", "keywords", "innit"],
+                2048,
+                "Journal of Pure and Applied Titling",
             ),
             (
                 1,
                 "What a Short Paper for a Long Title",
-                vec![author::new("Author One"), author::new("Author Two")],
+                vec![author::new(2, "Author One"), author::new(3, "Author Two")],
+                vec!["quite long keywords", "not so short keywords"],
+                1024,
+                "Proceedings of the Long Conference on Short Papers",
             ),
         ];
         for i in 0..N {
@@ -59,6 +90,11 @@ mod test {
             for j in 0..w[i].authors.len() {
                 assert_eq!(w[i].authors[j], a[i].2[j]);
             }
+            for j in 0..w[i].keywords.len() {
+                assert_eq!(w[i].keywords[j], a[i].3[j]);
+            }
+            assert_eq!(w[i].year, a[i].4);
+            assert_eq!(w[i].journal, a[i].5);
         }
     }
 
