@@ -22,7 +22,7 @@ mod test {
     use crate::article::{self, Article};
     use crate::author;
 
-    fn test_cases() -> [Article; 2] {
+    fn init_cases() -> [Article; 2] {
         [
             article::new(
                 0,
@@ -40,7 +40,7 @@ mod test {
     #[test]
     fn test_sanity() {
         const N: usize = 2;
-        let w: [Article; N] = test_cases();
+        let w: [Article; N] = init_cases();
         let a = [
             (
                 0,
@@ -64,7 +64,7 @@ mod test {
 
     #[test]
     fn test_json() {
-        let w = test_cases();
+        let w = init_cases();
         for v in w.iter() {
             let s = serde_json::to_string(&v).unwrap();
             let u: Article = serde_json::from_str(&s).unwrap();
