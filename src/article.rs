@@ -12,46 +12,48 @@ pub struct Article {
     journal: String,
 }
 
-pub fn new(
-    id: i32,
-    title: &str,
-    authors: Vec<Author>,
-    kw: Vec<&str>,
-    year: u16,
-    journal: &str,
-) -> Article {
-    Article {
-        id: id,
-        title: String::from(title),
-        authors: authors,
-        keywords: kw.iter().map(|x| String::from(*x)).collect(),
-        year: year,
-        journal: String::from(journal),
+impl Article {
+    pub fn new(
+        id: i32,
+        title: &str,
+        authors: Vec<Author>,
+        kw: Vec<&str>,
+        year: u16,
+        journal: &str,
+    ) -> Article {
+        Article {
+            id: id,
+            title: String::from(title),
+            authors: authors,
+            keywords: kw.iter().map(|x| String::from(*x)).collect(),
+            year: year,
+            journal: String::from(journal),
+        }
     }
 }
 
 #[cfg(test)]
 mod test {
-    use crate::article::{self, Article};
-    use crate::author;
+    use crate::article::Article;
+    use crate::author::Author;
 
     fn init_cases() -> [Article; 2] {
         [
-            article::new(
+            Article::new(
                 0,
                 "What a Long Title for a Short Paper",
                 vec![
-                    author::new(0, "First Author"),
-                    author::new(1, "Second Author"),
+                    Author::new(0, "First Author"),
+                    Author::new(1, "Second Author"),
                 ],
                 vec!["what", "meta", "keywords", "innit"],
                 2048,
                 "Journal of Pure and Applied Titling",
             ),
-            article::new(
+            Article::new(
                 1,
                 "What a Short Paper for a Long Title",
-                vec![author::new(2, "Author One"), author::new(3, "Author Two")],
+                vec![Author::new(2, "Author One"), Author::new(3, "Author Two")],
                 vec!["quite long keywords", "not so short keywords"],
                 1024,
                 "Proceedings of the Long Conference on Short Papers",
@@ -68,8 +70,8 @@ mod test {
                 0,
                 "What a Long Title for a Short Paper",
                 vec![
-                    author::new(0, "First Author"),
-                    author::new(1, "Second Author"),
+                    Author::new(0, "First Author"),
+                    Author::new(1, "Second Author"),
                 ],
                 vec!["what", "meta", "keywords", "innit"],
                 2048,
@@ -78,7 +80,7 @@ mod test {
             (
                 1,
                 "What a Short Paper for a Long Title",
-                vec![author::new(2, "Author One"), author::new(3, "Author Two")],
+                vec![Author::new(2, "Author One"), Author::new(3, "Author Two")],
                 vec!["quite long keywords", "not so short keywords"],
                 1024,
                 "Proceedings of the Long Conference on Short Papers",

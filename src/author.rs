@@ -6,21 +6,23 @@ pub struct Author {
     name: String,
 }
 
-pub fn new(id: i32, name: &str) -> Author {
-    Author {
-        id: id,
-        name: String::from(name),
+impl Author {
+    pub fn new(id: i32, name: &str) -> Author {
+        Author {
+            id: id,
+            name: String::from(name),
+        }
     }
 }
 
 #[cfg(test)]
 mod test {
-    use crate::author::{self, Author};
+    use crate::author::Author;
 
     fn init_cases() -> [Author; 2] {
         [
-            author::new(0, "Author McAuthorson"),
-            author::new(1, "Authorius Authorinus"),
+            Author::new(0, "Author McAuthorson"),
+            Author::new(1, "Authorius Authorinus"),
         ]
     }
 

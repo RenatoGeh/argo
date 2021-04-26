@@ -1,11 +1,18 @@
 use serde_json;
 
-use argo::article::{self, Article};
-use argo::author;
+use argo::article::Article;
+use argo::author::Author;
 
 fn main() {
-    let a = author::new("Author Person");
-    let w = article::new(0, "Article Title", vec![a]);
+    let a = Author::new(0, "Author Person");
+    let w = Article::new(
+        0,
+        "Article Title",
+        vec![a],
+        vec!["here", "are", "some", "keywords"],
+        2021,
+        "Jordanese Journal on Journalistic Journals",
+    );
 
     println!("{:#?}", w);
 
