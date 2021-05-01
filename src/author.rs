@@ -1,13 +1,13 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Clone)]
 pub struct Author {
-    id: i32,
-    name: String,
+    pub id: usize,
+    pub name: String,
 }
 
 impl Author {
-    pub fn new(id: i32, name: &str) -> Author {
+    pub fn new(id: usize, name: &str) -> Author {
         Author {
             id: id,
             name: String::from(name),

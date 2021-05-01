@@ -1,22 +1,20 @@
 use serde::{Deserialize, Serialize};
 
-use crate::author::Author;
-
-#[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Clone)]
 pub struct Article {
-    id: i32,
-    title: String,
-    authors: Vec<Author>,
-    keywords: Vec<String>,
-    year: u16,
-    journal: String,
+    pub id: usize,
+    pub title: String,
+    pub authors: Vec<i32>,
+    pub keywords: Vec<String>,
+    pub year: u16,
+    pub journal: String,
 }
 
 impl Article {
     pub fn new(
-        id: i32,
+        id: usize,
         title: &str,
-        authors: Vec<Author>,
+        authors: Vec<i32>,
         kw: Vec<&str>,
         year: u16,
         journal: &str,
@@ -35,17 +33,13 @@ impl Article {
 #[cfg(test)]
 mod test {
     use crate::article::Article;
-    use crate::author::Author;
 
     fn init_cases() -> [Article; 2] {
-        [
+        return [
             Article::new(
                 0,
                 "What a Long Title for a Short Paper",
-                vec![
-                    Author::new(0, "First Author"),
-                    Author::new(1, "Second Author"),
-                ],
+                vec![0, 1],
                 vec!["what", "meta", "keywords", "innit"],
                 2048,
                 "Journal of Pure and Applied Titling",
@@ -53,12 +47,12 @@ mod test {
             Article::new(
                 1,
                 "What a Short Paper for a Long Title",
-                vec![Author::new(2, "Author One"), Author::new(3, "Author Two")],
+                vec![2, 3],
                 vec!["quite long keywords", "not so short keywords"],
                 1024,
                 "Proceedings of the Long Conference on Short Papers",
             ),
-        ]
+        ];
     }
 
     #[test]
@@ -69,10 +63,7 @@ mod test {
             (
                 0,
                 "What a Long Title for a Short Paper",
-                vec![
-                    Author::new(0, "First Author"),
-                    Author::new(1, "Second Author"),
-                ],
+                vec![0, 1],
                 vec!["what", "meta", "keywords", "innit"],
                 2048,
                 "Journal of Pure and Applied Titling",
@@ -80,7 +71,7 @@ mod test {
             (
                 1,
                 "What a Short Paper for a Long Title",
-                vec![Author::new(2, "Author One"), Author::new(3, "Author Two")],
+                vec![2, 3],
                 vec!["quite long keywords", "not so short keywords"],
                 1024,
                 "Proceedings of the Long Conference on Short Papers",
