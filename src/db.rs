@@ -14,10 +14,14 @@ pub struct Database {
 }
 
 impl Database {
-    fn new(authors: Vec<Author>, articles: Vec<Article>) -> Database {
+    fn new(authors: &Vec<Author>, articles: &Vec<Article>) -> Database {
+        let mut c_authors = authors.clone();
+        c_authors.sort_by_key(|a| a.id);
+        let mut c_articles = articles.clone();
+        c_articles.sort_by_key(|a| a.id);
         Database {
-            authors: authors,
-            articles: articles,
+            authors: c_authors,
+            articles: c_articles,
         }
     }
 
@@ -34,13 +38,11 @@ impl Database {
     pub fn load(path_authors: &str, path_articles: &str) -> Result<Database, std::io::Error> {
         let p = Path::new(path_authors);
         let r = BufReader::new(File::open(p)?);
-        let mut authors: Vec<Author> = serde_json::from_reader(r)?;
-        authors.sort_by_key(|a| a.id);
+        let authors: Vec<Author> = serde_json::from_reader(r)?;
         let p = Path::new(path_articles);
         let r = BufReader::new(File::open(p)?);
-        let mut articles: Vec<Article> = serde_json::from_reader(r)?;
-        articles.sort_by_key(|a| a.id);
-        return Ok(Database::new(authors, articles));
+        let articles: Vec<Article> = serde_json::from_reader(r)?;
+        return Ok(Database::new(&authors, &articles));
     }
 
     pub fn lookup_author(&self, id: usize) -> &Author {
@@ -60,22 +62,14 @@ mod test {
     use crate::author::Author;
     use crate::db::Database;
 
-    fn init_cases() -> Database {
+    fn init_cases() -> (Database, Vec<Author>, Vec<Article>) {
         let auts = vec![
-            Author::new(0, "First Author"),
             Author::new(1, "Second Author"),
             Author::new(2, "Author One"),
+            Author::new(0, "First Author"),
             Author::new(3, "Author Two"),
         ];
         let arts = vec![
-            Article::new(
-                0,
-                "What a Long Title for a Short Paper",
-                vec![0, 1],
-                vec!["what", "meta", "keywords", "innit"],
-                2048,
-                "Journal of Pure and Applied Titling",
-            ),
             Article::new(
                 1,
                 "What a Short Paper for a Long Title",
@@ -84,13 +78,21 @@ mod test {
                 1024,
                 "Proceedings of the Long Conference on Short Papers",
             ),
+            Article::new(
+                0,
+                "What a Long Title for a Short Paper",
+                vec![0, 1],
+                vec!["what", "meta", "keywords", "innit"],
+                2048,
+                "Journal of Pure and Applied Titling",
+            ),
         ];
-        return Database::new(auts, arts);
+        return (Database::new(&auts, &arts), auts, arts);
     }
 
     #[test]
     fn test_io() {
-        let o: Database = init_cases();
+        let (o, _, _) = init_cases();
         let p_authors = "/tmp/argo_authors.json";
         let p_articles = "/tmp/argo_articles.json";
         match o.save(p_authors, p_articles) {
@@ -104,5 +106,18 @@ mod test {
             Err(e) => panic!("Test failed to load database: {}", e),
         };
         assert_eq!(o, n);
+    }
+
+    #[test]
+    fn test_lookup() {
+        let (o, mut auts, mut arts) = init_cases();
+        auts.sort_by_key(|a| a.id);
+        arts.sort_by_key(|a| a.id);
+        for i in 0..auts.len() {
+            assert_eq!(o.lookup_author(i), &auts[i]);
+        }
+        for i in 0..arts.len() {
+            assert_eq!(o.lookup_article(i), &arts[i]);
+        }
     }
 }
